@@ -42,6 +42,60 @@ try {
   console.warn("Firebase no se pudo inicializar:", err);
 }
 
+// ==========================================
+// CONFIGURACIÓN DE NOTIFICACIONES (GITHUB ACTIONS API)
+// ==========================================
+const GITHUB_CONFIG = {
+  owner: 'lenekerc98',
+  repo: 'rincondeamor',
+  workflowFile: 'notificar.yml'
+};
+
+async function getGitHubToken() {
+  if (window._gh_token) return window._gh_token;
+  try {
+    if (firestoreDb) {
+      const doc = await firestoreDb.collection('config').doc('github').get();
+      if (doc.exists && doc.data().token) {
+        window._gh_token = doc.data().token;
+        return window._gh_token;
+      }
+    }
+  } catch (e) {
+    console.warn("No se pudo cargar token de config:", e);
+  }
+  return null;
+}
+
+async function dispatchEmailNotification(carta) {
+  const token = await getGitHubToken();
+  if (!token || !carta) {
+    console.warn("Token no disponible para enviar correo.");
+    return false;
+  }
+  try {
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/actions/workflows/${GITHUB_CONFIG.workflowFile}/dispatches`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ref: 'main',
+        inputs: {
+          carta_id: carta.id || '',
+          destinatario: carta.para || ''
+        }
+      })
+    });
+    return (res.status === 204 || res.ok);
+  } catch (err) {
+    console.error("Error al despachar workflow de correo:", err);
+    return false;
+  }
+}
+
 // Datos por defecto (en caso de abrir sin servidor local o error de red)
 const DEFAULT_PHOTOS = [
   {
@@ -599,6 +653,31 @@ function setupEventListeners() {
     if (state.currentOpenLetter) startEditLetter(state.currentOpenLetter);
   });
 
+  // Botón de enviar aviso por correo desde el modal de lectura (pergamino)
+  const sendEmailBtn = document.getElementById('modal-send-email-btn');
+  sendEmailBtn?.addEventListener('click', async () => {
+    if (!state.currentOpenLetter) return;
+    const dest = state.currentOpenLetter.para || 'Rebeca';
+    const origHtml = sendEmailBtn.innerHTML;
+    sendEmailBtn.innerHTML = '<span>Enviando aviso... ⏳</span>';
+    sendEmailBtn.disabled = true;
+
+    const ok = await dispatchEmailNotification(state.currentOpenLetter);
+    if (ok) {
+      sendEmailBtn.innerHTML = `<span>¡Aviso enviado a ${dest}! 📬✨</span>`;
+      setTimeout(() => {
+        sendEmailBtn.innerHTML = origHtml;
+        sendEmailBtn.disabled = false;
+      }, 3500);
+    } else {
+      sendEmailBtn.innerHTML = '<span>⚠️ No se pudo enviar</span>';
+      setTimeout(() => {
+        sendEmailBtn.innerHTML = origHtml;
+        sendEmailBtn.disabled = false;
+      }, 3000);
+    }
+  });
+
   // Modal de redacción
   const composerModal = document.getElementById('composer-modal-overlay');
   const openComposer = () => {
@@ -617,23 +696,26 @@ function setupEventListeners() {
     composerModal.classList.remove('active');
   });
 
-  // Formulario de nueva carta o edición
-  const composerForm = document.getElementById('composer-form');
-  composerForm?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const saveBtn = document.getElementById('save-letter-btn');
-    const originalBtnHtml = saveBtn ? saveBtn.innerHTML : '<span>✨ Guardar Carta</span>';
-    if (saveBtn) {
-      saveBtn.innerHTML = '<span>Guardando en las estrellas... ✨</span>';
-      saveBtn.disabled = true;
-    }
-
+  // Función unificada para guardar carta (con o sin correo)
+  async function performSaveLetter(shouldSendEmail, triggerBtn) {
     const editingId = document.getElementById('editing-letter-id').value;
     const sender = document.getElementById('letter-sender').value;
     const recipient = document.getElementById('letter-recipient').value;
     const title = document.getElementById('letter-title').value.trim();
     const content = document.getElementById('letter-content').value.trim();
+
+    if (!title || !content) {
+      alert("Por favor completa el título y el mensaje con cariño ❤️");
+      return;
+    }
+
+    const originalBtnHtml = triggerBtn ? triggerBtn.innerHTML : '';
+    if (triggerBtn) {
+      triggerBtn.innerHTML = shouldSendEmail 
+        ? '<span>Guardando y avisando por correo... 💌</span>'
+        : '<span>Guardando en las estrellas... ✨</span>';
+      triggerBtn.disabled = true;
+    }
 
     const now = new Date();
     const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
@@ -690,19 +772,41 @@ function setupEventListeners() {
     localStorage.setItem('rl_saved_letters', JSON.stringify(state.letters));
     renderLetters();
 
-    if (saveBtn) {
-      saveBtn.innerHTML = '<span>¡Carta guardada! ❤️</span>';
+    // Disparar envío automático de correo si se seleccionó
+    if (shouldSendEmail) {
+      dispatchEmailNotification(letterToSave);
     }
 
-    // Cerrar suavemente el modal y limpiar formulario tras 1 segundo
+    if (triggerBtn) {
+      triggerBtn.innerHTML = shouldSendEmail 
+        ? '<span>¡Guardada y correo enviado! 💌</span>'
+        : '<span>¡Carta guardada! ❤️</span>';
+    }
+
+    // Cerrar suavemente el modal y limpiar formulario tras 1.2 segundos
     setTimeout(() => {
       composerModal.classList.remove('active');
       resetComposerForm();
-      if (saveBtn) {
-        saveBtn.innerHTML = originalBtnHtml;
-        saveBtn.disabled = false;
+      if (triggerBtn) {
+        triggerBtn.innerHTML = originalBtnHtml;
+        triggerBtn.disabled = false;
       }
-    }, 1100);
+    }, 1200);
+  }
+
+  // Formulario: botón principal (Guardar y Avisar por Correo)
+  const composerForm = document.getElementById('composer-form');
+  composerForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const saveBtn = document.getElementById('save-letter-btn');
+    await performSaveLetter(true, saveBtn);
+  });
+
+  // Formulario: botón secundario (Solo Guardar)
+  document.getElementById('save-only-btn')?.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const saveOnlyBtn = document.getElementById('save-only-btn');
+    await performSaveLetter(false, saveOnlyBtn);
   });
 }
 

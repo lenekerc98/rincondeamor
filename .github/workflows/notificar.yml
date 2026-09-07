@@ -4,10 +4,18 @@ on:
   push:
     branches:
       - main
-      - master
     paths:
       - 'data/cartas.json'
-  workflow_dispatch: # Permite probarlo manualmente desde la pestaña Actions de GitHub
+  workflow_dispatch:
+    inputs:
+      carta_id:
+        description: 'ID de la carta a notificar'
+        required: false
+        default: ''
+      destinatario:
+        description: 'Destinatario de la notificacion'
+        required: false
+        default: ''
 
 jobs:
   enviar-correo:
@@ -32,4 +40,6 @@ jobs:
           REBECA_EMAIL: ${{ secrets.REBECA_EMAIL }}
           LENEKER_EMAIL: ${{ secrets.LENEKER_EMAIL }}
           WEB_URL: ${{ secrets.WEB_URL }}
+          INPUT_CARTA_ID: ${{ github.event.inputs.carta_id }}
+          INPUT_DESTINATARIO: ${{ github.event.inputs.destinatario }}
         run: node scripts/notificar.js

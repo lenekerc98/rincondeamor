@@ -216,12 +216,17 @@
           <div class="parchment-seal-mark" id="modal-letter-seal">L & R</div>
         </footer>
 
-        <!-- Acciones de edición para el autor -->
+        <!-- Acciones de edición y envío para la carta -->
         <div class="parchment-author-actions" id="parchment-author-actions"
-          style="margin-top: 24px; padding-top: 16px; border-top: 1px dashed #d3c4b0; display: flex; justify-content: flex-end; gap: 10px;">
+          style="margin-top: 24px; padding-top: 16px; border-top: 1px dashed #d3c4b0; display: flex; justify-content: flex-end; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <button type="button" class="primary-btn" id="modal-send-email-btn"
+            style="background: linear-gradient(135deg, #c4385a, #8e253c); color: #fff; font-size: 0.85rem; padding: 8px 16px; border-radius: 6px; cursor: pointer; border: none; box-shadow: 0 2px 8px rgba(196,56,90,0.3);">
+            <span>📨 Enviar Aviso por Correo</span>
+          </button>
           <button type="button" class="secondary-btn" id="modal-edit-letter-btn"
-            style="color: #681829; border-color: #681829; font-size: 0.85rem; padding: 8px 16px;">✏️ Editar esta
-            carta</button>
+            style="color: #681829; border-color: #681829; font-size: 0.85rem; padding: 8px 16px;">
+            ✏️ Editar carta
+          </button>
         </div>
       </article>
     </div>
@@ -264,10 +269,13 @@
             required></textarea>
         </div>
 
-        <div class="composer-actions">
+        <div class="composer-actions" style="display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;">
           <button type="button" class="secondary-btn" id="cancel-compose-btn">Cancelar</button>
-          <button type="submit" class="primary-btn" id="save-letter-btn">
-            <span>✨ Guardar Carta</span>
+          <button type="button" class="secondary-btn" id="save-only-btn" style="border-color: rgba(226,141,153,0.35);">
+            <span>💾 Solo Guardar</span>
+          </button>
+          <button type="submit" class="primary-btn pulse-on-hover" id="save-letter-btn">
+            <span>💌 Guardar y Avisar por Correo</span>
           </button>
         </div>
       </form>
