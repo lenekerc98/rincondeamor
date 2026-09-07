@@ -232,25 +232,25 @@ async function loadData() {
   }
   renderSlideshow();
 
-  // Cargar cartas (con persistencia local y fallback a JSON)
-  const localSaved = localStorage.getItem('rl_saved_letters');
-  if (localSaved) {
-    try {
-      state.letters = JSON.parse(localSaved);
-    } catch (e) {
-      state.letters = [];
-    }
-  } else {
-    try {
-      const res = await fetch('data/cartas.json');
-      if (res.ok) {
-        state.letters = await res.json();
+  // Cargar cartas siempre sincronizadas desde el servidor (data/cartas.json)
+  try {
+    const res = await fetch('data/cartas.json?t=' + Date.now());
+    if (res.ok) {
+      const serverLetters = await res.json();
+      if (Array.isArray(serverLetters) && serverLetters.length > 0) {
+        state.letters = serverLetters;
+        localStorage.setItem('rl_saved_letters', JSON.stringify(serverLetters));
       } else {
-        state.letters = [];
+        const localSaved = localStorage.getItem('rl_saved_letters');
+        state.letters = localSaved ? JSON.parse(localSaved) : [];
       }
-    } catch (err) {
-      state.letters = [];
+    } else {
+      const localSaved = localStorage.getItem('rl_saved_letters');
+      state.letters = localSaved ? JSON.parse(localSaved) : [];
     }
+  } catch (err) {
+    const localSaved = localStorage.getItem('rl_saved_letters');
+    state.letters = localSaved ? JSON.parse(localSaved) : [];
   }
   renderLetters();
 }
