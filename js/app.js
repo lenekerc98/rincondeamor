@@ -560,7 +560,6 @@ function resetComposerForm() {
   document.getElementById('letter-title').value = '';
   document.getElementById('letter-content').value = '';
   document.getElementById('save-letter-btn').innerHTML = '<span>✨ Guardar Carta</span>';
-  document.getElementById('git-sync-instructions').style.display = 'none';
 
   // Remitente y destinatario fijados y bloqueados automáticamente
   const sender = state.currentUser || 'Leneker';
@@ -569,13 +568,6 @@ function resetComposerForm() {
   const recipientEl = document.getElementById('letter-recipient');
   if (senderEl) senderEl.value = sender;
   if (recipientEl) recipientEl.value = recipient;
-}
-
-function saveAndSyncLetters() {
-  // Guardar en el navegador (para que no se pierdan cambios al recargar)
-  localStorage.setItem('rl_saved_letters', JSON.stringify(state.letters));
-  // Descargar archivo cartas.json actualizado para hacer commit y push en GitHub
-  downloadCartasJson(state.letters);
 }
 
 // ==========================================
@@ -698,11 +690,11 @@ function setupEventListeners() {
     localStorage.setItem('rl_saved_letters', JSON.stringify(state.letters));
     renderLetters();
 
-    // Mostrar mensaje de confirmación
-    const syncBanner = document.getElementById('git-sync-instructions');
-    if (syncBanner) syncBanner.style.display = 'block';
+    if (saveBtn) {
+      saveBtn.innerHTML = '<span>¡Carta guardada! ❤️</span>';
+    }
 
-    // Cerrar suavemente el modal y limpiar formulario tras 1.6 segundos
+    // Cerrar suavemente el modal y limpiar formulario tras 1 segundo
     setTimeout(() => {
       composerModal.classList.remove('active');
       resetComposerForm();
@@ -710,18 +702,8 @@ function setupEventListeners() {
         saveBtn.innerHTML = originalBtnHtml;
         saveBtn.disabled = false;
       }
-    }, 1600);
+    }, 1100);
   });
-}
-
-function downloadCartasJson(lettersArray) {
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(lettersArray, null, 2));
-  const downloadAnchor = document.createElement('a');
-  downloadAnchor.setAttribute("href", dataStr);
-  downloadAnchor.setAttribute("download", "cartas.json");
-  document.body.appendChild(downloadAnchor);
-  downloadAnchor.click();
-  downloadAnchor.remove();
 }
 
 // ==========================================
