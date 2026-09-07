@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Para Rebeca & Leneker | Nuestro Rincón Secreto</title>
+  <meta name="description"
+    content="Un espacio íntimo y privado para guardar nuestras cartas, recuerdos y momentos especiales.">
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Dancing+Script:wght@600;700&family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,700;1,400;1,600&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <!-- Canvas de fondo para partículas sutiles de luz -->
+  <canvas id="ambient-canvas"></canvas>
+
+  <!-- Control de música ambiental flotante -->
+  <aside class="music-player-widget" id="music-widget">
+    <button id="music-toggle-btn" class="music-btn" aria-label="Reproducir o pausar música">
+      <span class="music-icon" id="music-icon">🎵</span>
+      <span class="music-label">Best Part ♫</span>
+      <span class="music-waves" id="music-waves">
+        <span></span><span></span><span></span><span></span>
+      </span>
+    </button>
+    <audio id="ambient-audio" loop preload="auto">
+      <source src="assets/audio/best_part.mp3" type="audio/mp3">
+    </audio>
+  </aside>
+
+  <!-- PANTALLA DE ACCESO PRIVADO (SOLO CÓDIGO) -->
+  <div class="gatekeeper-overlay" id="gatekeeper-overlay">
+    <div class="gatekeeper-card" id="gatekeeper-card">
+      <div class="gatekeeper-seal">
+        <span class="seal-icon">💌</span>
+      </div>
+
+      <h1 class="gatekeeper-title" id="gatekeeper-title">Para Rebeca</h1>
+      <p class="gatekeeper-subtitle" id="gatekeeper-subtitle">Un rincón exclusivo para nosotros dos. Ingresa con tu
+        código para entrar.</p>
+
+      <form id="gatekeeper-form" class="gatekeeper-form">
+        <div class="input-group">
+          <label for="gatekeeper-pass" class="input-label" id="gatekeeper-label">Código de acceso</label>
+          <div class="input-wrapper">
+            <input type="password" id="gatekeeper-pass" placeholder="Ingresa tu código..." autocomplete="off" required>
+            <button type="button" id="toggle-pass-visibility" class="toggle-pass-btn"
+              aria-label="Mostrar u ocultar código">👁️</button>
+          </div>
+          <span class="error-msg" id="pass-error-msg">Código incorrecto. Inténtalo de nuevo con cariño ❤️</span>
+        </div>
+        <button type="submit" id="gatekeeper-submit-btn" class="primary-btn pulse-on-hover">
+          <span id="gatekeeper-btn-text">Abrir Nuestro Rincón</span>
+          <span class="btn-arrow">✨</span>
+        </button>
+      </form>
+
+      <div class="gatekeeper-hint">
+        <button type="button" id="secret-author-switch" class="secret-switch-btn" title="Modo de acceso">
+          <small>🔒 Acceso exclusivo y privado</small>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- APLICACIÓN PRINCIPAL (VISIBLE TRAS DESBLOQUEO) -->
+  <div class="main-app" id="main-app" style="display: none;">
+
+    <!-- Barra de Navegación Superior -->
+    <header class="app-header">
+      <div class="header-container">
+        <div class="header-branding">
+          <span class="header-monogram">R & L</span>
+          <div class="header-titles">
+            <span class="header-title">Rebeca & Leneker</span>
+            <span class="header-status">
+              <span class="status-dot"></span> Conectado como <strong id="current-user-badge">Rebeca</strong>
+            </span>
+          </div>
+        </div>
+
+        <nav class="header-nav">
+          <a href="#recuerdos" class="nav-link">Nuestros Recuerdos</a>
+          <a href="#buzon" class="nav-link">Buzón de Cartas</a>
+          <button id="write-letter-btn" class="write-btn">
+            <span>✍️ Escribir Carta</span>
+          </button>
+          <button id="logout-btn" class="logout-btn" title="Cerrar sesión">🔒</button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Contenido Central -->
+    <main class="app-content">
+      <!-- SECCIÓN: CARRUSEL DE FOTOS CAMBIANTES (RECUERDOS) -->
+      <section class="photos-section" id="recuerdos">
+        <div class="section-header">
+          <div class="section-tag">Fotografías & Momentos</div>
+          <h3 class="section-title">Nuestra Galería de Recuerdos</h3>
+          <p class="section-desc">Momentos especiales que se transforman suavemente con el tiempo.</p>
+        </div>
+
+        <div class="slideshow-wrapper">
+          <div class="slideshow-container" id="slideshow-container">
+            <!-- Las fotos se inyectan dinámicamente desde data/fotos.json -->
+          </div>
+
+          <!-- Controles del carrusel -->
+          <button class="slide-control prev-btn" id="slide-prev-btn" aria-label="Foto anterior">‹</button>
+          <button class="slide-control random-btn" id="slide-random-btn" aria-label="Foto aleatoria"
+            title="Foto aleatoria">🔀</button>
+          <button class="slide-control next-btn" id="slide-next-btn" aria-label="Foto siguiente">›</button>
+
+          <!-- Indicadores de puntos -->
+          <div class="slide-indicators" id="slide-indicators"></div>
+        </div>
+
+        <div class="photo-tip-card">
+          <span class="tip-icon">📸</span>
+          <div class="tip-text">
+            <strong>Tus fotos personalizadas:</strong> Puedes agregar tus propias fotos en la carpeta
+            <code>assets/fotos/</code> o agregarlas en <code>data/fotos.json</code>.
+          </div>
+        </div>
+      </section>
+
+      <!-- Sección Hero de Bienvenida -->
+      <section class="hero-section">
+        <div class="hero-badge">Nuestro Espacio Íntimo</div>
+        <h2 class="hero-heading">Donde cada palabra queda guardada para siempre</h2>
+        <p class="hero-subtext">Cada carta es un pedacito de nuestro corazón y cada foto un recuerdo que jamás
+          olvidaremos.</p>
+        <div class="hero-actions" style="margin-top: 24px;">
+          <button id="hero-write-letter-btn" class="primary-btn"
+            style="width: auto; padding: 12px 28px; display: inline-flex;">
+            <span>✍️ Escribir Carta o Nota</span>
+          </button>
+        </div>
+      </section>
+
+
+
+      <!-- SECCIÓN: BUZÓN DE CARTAS -->
+      <section class="letters-section" id="buzon">
+        <div class="section-header">
+          <div class="section-tag">Correspondencia Privada</div>
+          <h3 class="section-title">Buzón de Cartas Selladas</h3>
+          <p class="section-desc">Toca cualquier sobre para romper el lacre de cera y desplegar la carta.</p>
+        </div>
+
+        <!-- Filtros del buzón -->
+        <div class="letters-filter-bar">
+          <div class="filter-pills">
+            <button class="filter-pill active" data-filter="all">Todas las cartas</button>
+            <button class="filter-pill" data-filter="Leneker">De Leneker</button>
+            <button class="filter-pill" data-filter="Rebeca">De Rebeca</button>
+          </div>
+          <div class="letters-count">
+            <span id="letters-count-text">1 carta guardada</span>
+          </div>
+        </div>
+
+        <!-- Cuadrícula de Sobres de Cartas -->
+        <div class="letters-grid" id="letters-grid">
+          <!-- Sobres inyectados por JavaScript -->
+        </div>
+      </section>
+    </main>
+
+    <!-- Pie de página -->
+    <footer class="app-footer">
+      <p>Hecho con amor exclusivo para <strong>Rebeca & Leneker</strong> ❤️</p>
+      <small>Alojado con privacidad en GitHub</small>
+    </footer>
+  </div>
+
+  <!-- MODAL: LECTURA DE CARTA (DESPLIEGUE CON ANIMACIÓN DE SOBRE) -->
+  <div class="modal-overlay letter-modal-overlay" id="read-modal-overlay">
+    <div class="letter-modal-container">
+      <button class="modal-close-btn" id="close-read-modal-btn" aria-label="Cerrar carta">&times;</button>
+
+      <!-- Carta estilo pergamino / papel fino editorial -->
+      <article class="parchment-letter" id="parchment-letter">
+        <header class="parchment-header">
+          <div class="parchment-stamp">
+            <span class="stamp-icon">💌</span>
+            <span class="stamp-date" id="modal-letter-date">Septiembre 2026</span>
+          </div>
+          <div class="parchment-meta">
+            <div class="meta-row"><span class="meta-label">De:</span> <strong id="modal-letter-sender">Leneker</strong>
+            </div>
+            <div class="meta-row"><span class="meta-label">Para:</span> <strong
+                id="modal-letter-receiver">Rebeca</strong></div>
+          </div>
+        </header>
+
+        <div class="parchment-divider"></div>
+
+        <h2 class="parchment-title" id="modal-letter-title">Título de la Carta</h2>
+
+        <div class="parchment-body" id="modal-letter-body">
+          <!-- Contenido de la carta -->
+        </div>
+
+        <footer class="parchment-footer">
+          <div class="parchment-signature" id="modal-letter-signature">Con todo mi amor, Leneker</div>
+          <div class="parchment-seal-mark" id="modal-letter-seal">L & R</div>
+        </footer>
+
+        <!-- Acciones de edición para el autor -->
+        <div class="parchment-author-actions" id="parchment-author-actions"
+          style="margin-top: 24px; padding-top: 16px; border-top: 1px dashed #d3c4b0; display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="secondary-btn" id="modal-edit-letter-btn"
+            style="color: #681829; border-color: #681829; font-size: 0.85rem; padding: 8px 16px;">✏️ Editar esta
+            carta</button>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <!-- MODAL: REDACTAR / EDITAR CARTA -->
+  <div class="modal-overlay composer-modal-overlay" id="composer-modal-overlay">
+    <div class="composer-modal-card">
+      <div class="composer-header">
+        <div class="composer-badge" id="composer-badge">Nueva Carta</div>
+        <h2 class="composer-title" id="composer-title">Escribe desde el corazón</h2>
+        <button class="modal-close-btn" id="close-composer-modal-btn" aria-label="Cerrar editor">&times;</button>
+      </div>
+
+      <form id="composer-form" class="composer-form">
+        <input type="hidden" id="editing-letter-id" value="">
+        <div class="form-row two-cols">
+          <div class="form-group">
+            <label for="letter-sender">De (Remitente)</label>
+            <div class="locked-field">
+              <input type="text" id="letter-sender" value="Leneker" readonly class="input-readonly">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="letter-recipient">Para (Destinatario)</label>
+            <div class="locked-field">
+              <input type="text" id="letter-recipient" value="Rebeca" readonly class="input-readonly">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="letter-title">Título de la carta</label>
+          <input type="text" id="letter-title" placeholder="Ej: Pensando en ti bajo la luna..." required>
+        </div>
+
+        <div class="form-group">
+          <label for="letter-content">Mensaje de la carta</label>
+          <textarea id="letter-content" rows="8" placeholder="Escribe aquí todas las palabras que quieras dedicarle..."
+            required></textarea>
+        </div>
+
+        <div class="composer-actions">
+          <button type="button" class="secondary-btn" id="cancel-compose-btn">Cancelar</button>
+          <button type="submit" class="primary-btn" id="save-letter-btn">
+            <span>✨ Guardar Carta</span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Instrucciones de sincronización con Git -->
+      <div class="git-sync-instructions" id="git-sync-instructions" style="display: none;">
+        <div class="success-banner">
+          <span class="banner-icon">🎉</span>
+          <div>
+            <strong>¡Carta lista y copiada!</strong>
+            <p>Se ha descargado el archivo <code>cartas.json</code> actualizado.</p>
+          </div>
+        </div>
+        <div class="sync-steps">
+          <p>Para que la carta quede publicada en la web y <strong>se envíe el correo automático</strong>:</p>
+          <ol>
+            <li>Reemplaza el archivo <code>data/cartas.json</code> con el descargado (o confirma el guardado).</li>
+            <li>Haz <code>git commit -m "Nueva carta"</code> y <code>git push</code>.</li>
+            <li>¡GitHub Actions le enviará el correo de notificación en automático!</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,35 @@
+name: Notificar Nueva Carta por Correo
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'data/cartas.json'
+  workflow_dispatch: # Permite probarlo manualmente desde la pestaña Actions de GitHub
+
+jobs:
+  enviar-correo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar código del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalar dependencias de envío
+        run: npm install nodemailer
+
+      - name: Enviar correo de notificación
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASS: ${{ secrets.GMAIL_APP_PASS }}
+          REBECA_EMAIL: ${{ secrets.REBECA_EMAIL }}
+          LENEKER_EMAIL: ${{ secrets.LENEKER_EMAIL }}
+          WEB_URL: ${{ secrets.WEB_URL }}
+        run: node scripts/notificar.js

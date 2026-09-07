@@ -1,0 +1,289 @@
+[
+  {
+    "id": "foto-1",
+    "url": "assets/fotos/1768768540414.jpg",
+    "titulo": "Un recuerdo inolvidable",
+    "fecha": "Un día especial",
+    "descripcion": "Momentos que se quedan grabados para siempre."
+  },
+  {
+    "id": "foto-2",
+    "url": "assets/fotos/20250915_193351.jpg",
+    "titulo": "Nuestra complicidad",
+    "fecha": "15 de Septiembre, 2025",
+    "descripcion": "Esa sonrisa que ilumina cualquier día."
+  },
+  {
+    "id": "foto-3",
+    "url": "assets/fotos/20250915_193352.jpg",
+    "titulo": "Tú y yo",
+    "fecha": "15 de Septiembre, 2025",
+    "descripcion": "El mejor lugar del mundo es a tu lado."
+  },
+  {
+    "id": "foto-4",
+    "url": "assets/fotos/20251010_225824.jpg",
+    "titulo": "Instantes mágicos",
+    "fecha": "10 de Octubre, 2025",
+    "descripcion": "Cada segundo compartido vale una eternidad."
+  },
+  {
+    "id": "foto-5",
+    "url": "assets/fotos/20251105_214108.jpg",
+    "titulo": "Juntos siempre",
+    "fecha": "5 de Noviembre, 2025",
+    "descripcion": "Haciendo de cada día una aventura especial."
+  },
+  {
+    "id": "foto-6",
+    "url": "assets/fotos/20251105_214135.jpg",
+    "titulo": "Detalles que enamoran",
+    "fecha": "5 de Noviembre, 2025",
+    "descripcion": "Una mirada dice más que mil palabras."
+  },
+  {
+    "id": "foto-7",
+    "url": "assets/fotos/20251130_193217.jpg",
+    "titulo": "Nuestros momentos",
+    "fecha": "30 de Noviembre, 2025",
+    "descripcion": "Donde el tiempo se detiene cuando estamos juntos."
+  },
+  {
+    "id": "foto-8",
+    "url": "assets/fotos/20251130_203910.jpg",
+    "titulo": "Risas y miradas",
+    "fecha": "30 de Noviembre, 2025",
+    "descripcion": "La alegría de compartir la vida contigo."
+  },
+  {
+    "id": "foto-9",
+    "url": "assets/fotos/20260102_202327.jpg",
+    "titulo": "Puro amor",
+    "fecha": "2 de Enero, 2026",
+    "descripcion": "Todo es más bonito desde que estás aquí."
+  },
+  {
+    "id": "foto-10",
+    "url": "assets/fotos/20260116_205736.jpg",
+    "titulo": "Recuerdos del corazón",
+    "fecha": "16 de Enero, 2026",
+    "descripcion": "De esos días que jamás quiero olvidar."
+  },
+  {
+    "id": "foto-11",
+    "url": "assets/fotos/20260201_000654.jpg",
+    "titulo": "Un recuerdo inolvidable",
+    "fecha": "1 de Febrero, 2026",
+    "descripcion": "Momentos que se quedan grabados para siempre."
+  },
+  {
+    "id": "foto-12",
+    "url": "assets/fotos/20260203_184243.jpg",
+    "titulo": "Nuestra complicidad",
+    "fecha": "3 de Febrero, 2026",
+    "descripcion": "Esa sonrisa que ilumina cualquier día."
+  },
+  {
+    "id": "foto-13",
+    "url": "assets/fotos/20260214_223919%280%29.jpg",
+    "titulo": "Tú y yo",
+    "fecha": "14 de Febrero, 2026",
+    "descripcion": "El mejor lugar del mundo es a tu lado."
+  },
+  {
+    "id": "foto-14",
+    "url": "assets/fotos/20260224_222030.jpg",
+    "titulo": "Instantes mágicos",
+    "fecha": "24 de Febrero, 2026",
+    "descripcion": "Cada segundo compartido vale una eternidad."
+  },
+  {
+    "id": "foto-15",
+    "url": "assets/fotos/20260416_134428.jpg",
+    "titulo": "Juntos siempre",
+    "fecha": "16 de Abril, 2026",
+    "descripcion": "Haciendo de cada día una aventura especial."
+  },
+  {
+    "id": "foto-16",
+    "url": "assets/fotos/20260418_213618.jpg",
+    "titulo": "Detalles que enamoran",
+    "fecha": "18 de Abril, 2026",
+    "descripcion": "Una mirada dice más que mil palabras."
+  },
+  {
+    "id": "foto-17",
+    "url": "assets/fotos/20260418_213706.jpg",
+    "titulo": "Nuestros momentos",
+    "fecha": "18 de Abril, 2026",
+    "descripcion": "Donde el tiempo se detiene cuando estamos juntos."
+  },
+  {
+    "id": "foto-18",
+    "url": "assets/fotos/20260615_223539.jpg",
+    "titulo": "Risas y miradas",
+    "fecha": "15 de Junio, 2026",
+    "descripcion": "La alegría de compartir la vida contigo."
+  },
+  {
+    "id": "foto-19",
+    "url": "assets/fotos/20260615_223551.jpg",
+    "titulo": "Puro amor",
+    "fecha": "15 de Junio, 2026",
+    "descripcion": "Todo es más bonito desde que estás aquí."
+  },
+  {
+    "id": "foto-20",
+    "url": "assets/fotos/20260615_223558%280%29.jpg",
+    "titulo": "Recuerdos del corazón",
+    "fecha": "15 de Junio, 2026",
+    "descripcion": "De esos días que jamás quiero olvidar."
+  },
+  {
+    "id": "foto-21",
+    "url": "assets/fotos/20260704_211621.jpg",
+    "titulo": "Un recuerdo inolvidable",
+    "fecha": "4 de Julio, 2026",
+    "descripcion": "Momentos que se quedan grabados para siempre."
+  },
+  {
+    "id": "foto-22",
+    "url": "assets/fotos/20260803_231541%280%29.jpg",
+    "titulo": "Nuestra complicidad",
+    "fecha": "3 de Agosto, 2026",
+    "descripcion": "Esa sonrisa que ilumina cualquier día."
+  },
+  {
+    "id": "foto-23",
+    "url": "assets/fotos/IMG-20250813-WA0048.jpg",
+    "titulo": "Mensajes & Recuerdos",
+    "fecha": "13 de Agosto, 2025",
+    "descripcion": "Esas conversaciones que guardo con cariño en el corazón."
+  },
+  {
+    "id": "foto-24",
+    "url": "assets/fotos/IMG-20250908-WA0043.jpg",
+    "titulo": "Mensajes & Recuerdos",
+    "fecha": "8 de Septiembre, 2025",
+    "descripcion": "Esas conversaciones que guardo con cariño en el corazón."
+  },
+  {
+    "id": "foto-25",
+    "url": "assets/fotos/IMG-20250913-WA0087.jpg",
+    "titulo": "Mensajes & Recuerdos",
+    "fecha": "13 de Septiembre, 2025",
+    "descripcion": "Esas conversaciones que guardo con cariño en el corazón."
+  },
+  {
+    "id": "foto-26",
+    "url": "assets/fotos/IMG-20251005-WA0014.jpg",
+    "titulo": "Mensajes & Recuerdos",
+    "fecha": "5 de Octubre, 2025",
+    "descripcion": "Esas conversaciones que guardo con cariño en el corazón."
+  },
+  {
+    "id": "foto-27",
+    "url": "assets/fotos/IMG-20251021-WA0020.jpg",
+    "titulo": "Mensajes & Recuerdos",
+    "fecha": "21 de Octubre, 2025",
+    "descripcion": "Esas conversaciones que guardo con cariño en el corazón."
+  },
+  {
+    "id": "foto-28",
+    "url": "assets/fotos/IMG-20251229-WA0043.jpeg",
+    "titulo": "Mensajes & Recuerdos",
+    "fecha": "29 de Diciembre, 2025",
+    "descripcion": "Esas conversaciones que guardo con cariño en el corazón."
+  },
+  {
+    "id": "foto-29",
+    "url": "assets/fotos/IMG-20251230-WA0084.jpg",
+    "titulo": "Mensajes & Recuerdos",
+    "fecha": "30 de Diciembre, 2025",
+    "descripcion": "Esas conversaciones que guardo con cariño en el corazón."
+  },
+  {
+    "id": "foto-30",
+    "url": "assets/fotos/IMG-20260201-WA0050.jpeg",
+    "titulo": "Mensajes & Recuerdos",
+    "fecha": "1 de Febrero, 2026",
+    "descripcion": "Esas conversaciones que guardo con cariño en el corazón."
+  },
+  {
+    "id": "foto-31",
+    "url": "assets/fotos/IMG-20260202-WA0003.jpg",
+    "titulo": "Mensajes & Recuerdos",
+    "fecha": "2 de Febrero, 2026",
+    "descripcion": "Esas conversaciones que guardo con cariño en el corazón."
+  },
+  {
+    "id": "foto-32",
+    "url": "assets/fotos/IMG-20260202-WA0007.jpg",
+    "titulo": "Mensajes & Recuerdos",
+    "fecha": "2 de Febrero, 2026",
+    "descripcion": "Esas conversaciones que guardo con cariño en el corazón."
+  },
+  {
+    "id": "foto-33",
+    "url": "assets/fotos/IMG-20260401-WA0133.jpg",
+    "titulo": "Mensajes & Recuerdos",
+    "fecha": "1 de Abril, 2026",
+    "descripcion": "Esas conversaciones que guardo con cariño en el corazón."
+  },
+  {
+    "id": "foto-34",
+    "url": "assets/fotos/IMG-20260714-WA0072.jpg",
+    "titulo": "Mensajes & Recuerdos",
+    "fecha": "14 de Julio, 2026",
+    "descripcion": "Esas conversaciones que guardo con cariño en el corazón."
+  },
+  {
+    "id": "foto-35",
+    "url": "assets/fotos/Screenshot_20250913_104041_One%20UI%20Home.jpg",
+    "titulo": "Mensajes & Recuerdos",
+    "fecha": "13 de Septiembre, 2025",
+    "descripcion": "Esas conversaciones que guardo con cariño en el corazón."
+  },
+  {
+    "id": "foto-36",
+    "url": "assets/fotos/Screenshot_20251115_155912_WhatsApp.jpg",
+    "titulo": "Mensajes & Recuerdos",
+    "fecha": "15 de Noviembre, 2025",
+    "descripcion": "Esas conversaciones que guardo con cariño en el corazón."
+  },
+  {
+    "id": "foto-37",
+    "url": "assets/fotos/Screenshot_20251225_015757_WhatsApp.jpg",
+    "titulo": "Mensajes & Recuerdos",
+    "fecha": "25 de Diciembre, 2025",
+    "descripcion": "Esas conversaciones que guardo con cariño en el corazón."
+  },
+  {
+    "id": "foto-38",
+    "url": "assets/fotos/Screenshot_20260109_000009_WhatsApp.jpg",
+    "titulo": "Mensajes & Recuerdos",
+    "fecha": "9 de Enero, 2026",
+    "descripcion": "Esas conversaciones que guardo con cariño en el corazón."
+  },
+  {
+    "id": "foto-39",
+    "url": "assets/fotos/Screenshot_20260210_000403_WhatsApp.jpg",
+    "titulo": "Mensajes & Recuerdos",
+    "fecha": "10 de Febrero, 2026",
+    "descripcion": "Esas conversaciones que guardo con cariño en el corazón."
+  },
+  {
+    "id": "foto-40",
+    "url": "assets/fotos/Screenshot_20260211_224929_WhatsApp.jpg",
+    "titulo": "Mensajes & Recuerdos",
+    "fecha": "11 de Febrero, 2026",
+    "descripcion": "Esas conversaciones que guardo con cariño en el corazón."
+  },
+  {
+    "id": "foto-41",
+    "url": "assets/fotos/Screenshot_20260527_004305_WhatsApp.jpg",
+    "titulo": "Mensajes & Recuerdos",
+    "fecha": "27 de Mayo, 2026",
+    "descripcion": "Esas conversaciones que guardo con cariño en el corazón."
+  }
+]

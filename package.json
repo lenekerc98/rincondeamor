@@ -1,0 +1,16 @@
+{
+  "name": "para-rebeca-y-leneker",
+  "version": "1.0.0",
+  "description": "Rincón privado y buzón de cartas para Rebeca & Leneker",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "test-email": "node scripts/notificar.js"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.13"
+  },
+  "keywords": ["cartas", "privado", "github-pages"],
+  "author": "Leneker",
+  "license": "MIT"
+}
