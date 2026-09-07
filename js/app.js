@@ -16,8 +16,31 @@ const APP_CONFIG = {
   // Intervalo de cambio de fotos (en milisegundos)
   slideshowInterval: 5000,
   // Música predeterminada (Best Part - Daniel Caesar & H.E.R.)
-  audioUrl: 'assets/audio/best_part.mp3'
 };
+
+// ==========================================
+// CONFIGURACIÓN DE FIREBASE FIRESTORE (Nube en tiempo real)
+// ==========================================
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAjaG3fWvOd4Uv-zOQcRh6-_OFURgNG3Cw",
+  authDomain: "rinconcitodeamor-e5ab5.firebaseapp.com",
+  projectId: "rinconcitodeamor-e5ab5",
+  storageBucket: "rinconcitodeamor-e5ab5.firebasestorage.app",
+  messagingSenderId: "684499737840",
+  appId: "1:684499737840:web:bba03288bdabba6e95f635",
+  measurementId: "G-8083N88NXZ"
+};
+
+let firestoreDb = null;
+try {
+  if (typeof firebase !== 'undefined') {
+    firebase.initializeApp(FIREBASE_CONFIG);
+    firestoreDb = firebase.firestore();
+    console.log("✨ Firebase Firestore conectado con éxito.");
+  }
+} catch (err) {
+  console.warn("Firebase no se pudo inicializar:", err);
+}
 
 // Datos por defecto (en caso de abrir sin servidor local o error de red)
 const DEFAULT_PHOTOS = [
@@ -232,27 +255,84 @@ async function loadData() {
   }
   renderSlideshow();
 
-  // Cargar cartas siempre sincronizadas desde el servidor (data/cartas.json)
+  // 1. Mostrar de inmediato lo que haya en memoria local mientras conecta la nube
+  const localSaved = localStorage.getItem('rl_saved_letters');
+  if (localSaved) {
+    try {
+      state.letters = JSON.parse(localSaved);
+      renderLetters();
+    } catch (e) {
+      state.letters = [];
+    }
+  }
+
+  // 2. Conectar sincronización en tiempo real con Firebase Firestore
+  if (firestoreDb) {
+    initFirestoreSync();
+  } else {
+    // Fallback: cargar desde data/cartas.json si Firebase no estuviera activo
+    try {
+      const res = await fetch('data/cartas.json?t=' + Date.now());
+      if (res.ok) {
+        const serverLetters = await res.json();
+        if (Array.isArray(serverLetters) && serverLetters.length > 0) {
+          state.letters = serverLetters;
+          renderLetters();
+        }
+      }
+    } catch (err) {
+      console.warn("Error cargando cartas locales:", err);
+    }
+  }
+}
+
+// Sincronización en tiempo real con la nube (Firestore)
+function initFirestoreSync() {
+  if (!firestoreDb) return;
+  firestoreDb.collection('cartas').onSnapshot(snapshot => {
+    if (!snapshot.empty) {
+      const letters = [];
+      snapshot.forEach(doc => {
+        letters.push(doc.data());
+      });
+      // Ordenar cartas: las más recientes siempre arriba
+      letters.sort((a, b) => {
+        const tA = a.timestamp || parseInt(a.id?.replace('carta-', '')) || 0;
+        const tB = b.timestamp || parseInt(b.id?.replace('carta-', '')) || 0;
+        return tB - tA;
+      });
+      state.letters = letters;
+      localStorage.setItem('rl_saved_letters', JSON.stringify(letters));
+      renderLetters();
+    } else {
+      // Si Firestore aún no tiene cartas, migramos la carta existente si existe
+      migrateInitialCartas();
+    }
+  }, err => {
+    console.warn("Firestore sync aviso:", err);
+  });
+}
+
+// Migrar cartas iniciales a Firestore para que nunca se pierdan
+async function migrateInitialCartas() {
+  if (!firestoreDb) return;
   try {
     const res = await fetch('data/cartas.json?t=' + Date.now());
     if (res.ok) {
-      const serverLetters = await res.json();
-      if (Array.isArray(serverLetters) && serverLetters.length > 0) {
-        state.letters = serverLetters;
-        localStorage.setItem('rl_saved_letters', JSON.stringify(serverLetters));
-      } else {
-        const localSaved = localStorage.getItem('rl_saved_letters');
-        state.letters = localSaved ? JSON.parse(localSaved) : [];
+      const initial = await res.json();
+      if (Array.isArray(initial) && initial.length > 0) {
+        for (const c of initial) {
+          const item = {
+            ...c,
+            timestamp: c.timestamp || parseInt(c.id?.replace('carta-', '')) || Date.now()
+          };
+          await firestoreDb.collection('cartas').doc(item.id).set(item);
+        }
       }
-    } else {
-      const localSaved = localStorage.getItem('rl_saved_letters');
-      state.letters = localSaved ? JSON.parse(localSaved) : [];
     }
-  } catch (err) {
-    const localSaved = localStorage.getItem('rl_saved_letters');
-    state.letters = localSaved ? JSON.parse(localSaved) : [];
+  } catch (e) {
+    console.warn("No se pudo migrar cartas iniciales:", e);
   }
-  renderLetters();
 }
 
 // ==========================================
@@ -547,8 +627,15 @@ function setupEventListeners() {
 
   // Formulario de nueva carta o edición
   const composerForm = document.getElementById('composer-form');
-  composerForm?.addEventListener('submit', (e) => {
+  composerForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    const saveBtn = document.getElementById('save-letter-btn');
+    const originalBtnHtml = saveBtn ? saveBtn.innerHTML : '<span>✨ Guardar Carta</span>';
+    if (saveBtn) {
+      saveBtn.innerHTML = '<span>Guardando en las estrellas... ✨</span>';
+      saveBtn.disabled = true;
+    }
 
     const editingId = document.getElementById('editing-letter-id').value;
     const sender = document.getElementById('letter-sender').value;
@@ -560,24 +647,29 @@ function setupEventListeners() {
     const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
     const fecha = `${now.getDate()} de ${months[now.getMonth()]}, ${now.getFullYear()}`;
 
+    let letterToSave = null;
+
     if (editingId) {
       // Editar carta existente
       const index = state.letters.findIndex(l => l.id === editingId);
+      letterToSave = {
+        ...(state.letters[index] || {}),
+        id: editingId,
+        de: sender,
+        para: recipient,
+        titulo: title,
+        extracto: content.slice(0, 100) + '...',
+        contenido: content,
+        sello: sender.charAt(0) + ' & ' + recipient.charAt(0),
+        updatedAt: Date.now()
+      };
       if (index !== -1) {
-        state.letters[index] = {
-          ...state.letters[index],
-          de: sender,
-          para: recipient,
-          titulo: title,
-          extracto: content.slice(0, 100) + '...',
-          contenido: content,
-          sello: sender.charAt(0) + ' & ' + recipient.charAt(0)
-        };
+        state.letters[index] = letterToSave;
       }
       document.getElementById('editing-letter-id').value = '';
     } else {
       // Crear nueva carta
-      const newLetter = {
+      letterToSave = {
         id: `carta-${Date.now()}`,
         de: sender,
         para: recipient,
@@ -586,17 +678,39 @@ function setupEventListeners() {
         extracto: content.slice(0, 100) + '...',
         contenido: content,
         leida: false,
-        sello: sender.charAt(0) + ' & ' + recipient.charAt(0)
+        sello: sender.charAt(0) + ' & ' + recipient.charAt(0),
+        timestamp: Date.now()
       };
-      state.letters.unshift(newLetter);
+      state.letters.unshift(letterToSave);
     }
 
-    // Persistir y descargar para Git
-    saveAndSyncLetters();
+    // Guardar en la nube (Firestore) para que ambos la vean al instante
+    if (firestoreDb) {
+      try {
+        await firestoreDb.collection('cartas').doc(letterToSave.id).set(letterToSave);
+        console.log("✅ Carta sincronizada en la nube (Firestore) con éxito");
+      } catch (err) {
+        console.error("Error al guardar en Firestore:", err);
+      }
+    }
+
+    // Respaldo en memoria local
+    localStorage.setItem('rl_saved_letters', JSON.stringify(state.letters));
     renderLetters();
 
-    // Mostrar mensaje de éxito y pasos de sincronización
-    document.getElementById('git-sync-instructions').style.display = 'block';
+    // Mostrar mensaje de confirmación
+    const syncBanner = document.getElementById('git-sync-instructions');
+    if (syncBanner) syncBanner.style.display = 'block';
+
+    // Cerrar suavemente el modal y limpiar formulario tras 1.6 segundos
+    setTimeout(() => {
+      composerModal.classList.remove('active');
+      resetComposerForm();
+      if (saveBtn) {
+        saveBtn.innerHTML = originalBtnHtml;
+        saveBtn.disabled = false;
+      }
+    }, 1600);
   });
 }
 

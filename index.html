@@ -272,27 +272,22 @@
         </div>
       </form>
 
-      <!-- Instrucciones de sincronización con Git -->
+      <!-- Mensaje de éxito al guardar en la nube -->
       <div class="git-sync-instructions" id="git-sync-instructions" style="display: none;">
-        <div class="success-banner">
-          <span class="banner-icon">🎉</span>
+        <div class="success-banner" style="background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.3);">
+          <span class="banner-icon">💌</span>
           <div>
-            <strong>¡Carta lista y copiada!</strong>
-            <p>Se ha descargado el archivo <code>cartas.json</code> actualizado.</p>
+            <strong>¡Carta guardada en las estrellas! ✨</strong>
+            <p>Ya está guardada en la nube y visible de inmediato para ambos.</p>
           </div>
-        </div>
-        <div class="sync-steps">
-          <p>Para que la carta quede publicada en la web y <strong>se envíe el correo automático</strong>:</p>
-          <ol>
-            <li>Reemplaza el archivo <code>data/cartas.json</code> con el descargado (o confirma el guardado).</li>
-            <li>Haz <code>git commit -m "Nueva carta"</code> y <code>git push</code>.</li>
-            <li>¡GitHub Actions le enviará el correo de notificación en automático!</li>
-          </ol>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Firebase SDKs para sincronización en tiempo real -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="js/app.js"></script>
 </body>
 
